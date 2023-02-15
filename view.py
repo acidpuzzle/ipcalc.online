@@ -1,26 +1,9 @@
 from app import app
 from flask.views import View
-from flask import request, render_template, redirect
+from flask import request, render_template
 
 
 from ipcalc import calc_dispatcher
-
-# @app.route('/test')
-# def index():
-#     return render_template("index.html.del")
-
-
-class Paginator:
-    def __init__(self, obj_gen: iter, on_each_side: int = 16):
-        self.on_each_side = on_each_side
-        self.obj_box = obj_gen
-        self.page_num = 1
-        self.full_list = []
-
-    # def gen_page(self):
-    #     for i <= on_each_side:
-    #     return [obj for obj in self.obj_box if]
-    #
 
 
 class IPCalc(View):
@@ -32,9 +15,9 @@ class IPCalc(View):
     def dispatch_request(self):
         raw_request_string = request.args.get('network', '')
         if raw_request_string:
-            app.logger.info(f"{raw_request_string=}")
             context = calc_dispatcher(raw_request_string)
-            print(context)
+            app.logger.debug(f"{raw_request_string=}")
+            app.logger.debug(f"{context=}")
         else:
             context = {}
 
@@ -64,4 +47,3 @@ def page_not_found(e):
 app.add_url_rule("/", view_func=IPCalc.as_view("ipcalc", "index.html"),)
 app.add_url_rule("/faq", view_func=BaseView.as_view("faq", "faq.html"),)
 app.add_url_rule("/about", view_func=BaseView.as_view("about", "about.html"),)
-app.add_url_rule("/error", view_func=BaseView.as_view("error", "error_template/calc_error.html"),)

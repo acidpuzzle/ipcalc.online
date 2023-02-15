@@ -8,12 +8,13 @@
 </form>
 {%- if version == 'IPv4' %}
 {% include 'addr_template/ipv4.html' %}
-{%- if subnet_error %}
-<p>Error: {{ subnet_error }}</p>
-{% endif -%}
-{%- if subnet_list %}
+{%- if sub_error %}
 <p>Subnets:</p>
-{%- for subnet in subnet_list %}
+<p>Error: {{ sub_error }}</p>
+{% endif -%}
+{%- if subnets %}
+<p>Subnets:</p>
+{%- for subnet in subnets %}
 {% include 'addr_template/ipv4subnet.html' -%}
 {% endfor -%}
 {% endif -%}
@@ -22,19 +23,20 @@
 <!-- BEGIN INCLUDE IPv6-->
 {%- if version == 'IPv6' %}
 {% include 'addr_template/ipv6.html' %}
-{%- if subnet_error %}
-<p>Error: {{ subnet_error }}</p>
+{%- if sub_error %}
+<p>Subnets:</p>
+<p>Error: {{ sub_error }}</p>
 {% endif -%}
-{%- if subnet_list %}
-<p>Subnets: {{ subnet_count }}</p>
-{%- for subnet in subnet_list %}
+{%- if subnets %}
+<p>Subnets:</p>
+{%- for subnet in subnets %}
 {% include 'addr_template/ipv6subnet.html' %}
 {% endfor -%}
 {% endif -%}
 {% endif -%}
 <!-- END INCLUDE IPv6-->
 <!-- BEGIN INCLUDE ERROR-->
-{%- if calc_error %}
-{% include 'error_template/calc_error.html' %}
+{%- if net_error %}
+<p>Error: {{ net_error }}</p>
 {% endif -%}
 {% endblock -%}

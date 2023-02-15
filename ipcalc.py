@@ -5,7 +5,7 @@ regex = re.compile(r"[\s\/%\\]+")
 
 
 def _parse_input(user_string: str) -> tuple:
-    return tuple(regex.split(user_string))
+    return tuple(regex.split(user_string.strip()))
 
 
 def _normalise_subnet_prefix(prefix: str) -> int:
@@ -16,7 +16,7 @@ def _get_doted_binary(address: bytes) -> str:
     return '{:08b}.{:08b}.{:08b}.{:08b}'.format(*list(address))
 
 
-def _fill_network_type(target_address) -> str:
+def _fill_network_type(target_address: IPv4Network | IPv6Network) -> str:
     if target_address.is_loopback:
         return "Loopback"
     elif target_address.is_unspecified:
@@ -38,7 +38,7 @@ def _fill_network_type(target_address) -> str:
         return " "
 
 
-def _fill_v4_class(packed_address: bytes):
+def _fill_v4_class(packed_address: bytes) -> str:
     bin_addr = _get_doted_binary(packed_address)
     if bin_addr.startswith('0'):
         return "Class A"
@@ -52,8 +52,9 @@ def _fill_v4_class(packed_address: bytes):
         return "Class E"
 
 
-def _get_net_info(netw: IPv4Network, addr: str = None):
+def _get_net_info(netw: IPv4Network | IPv6Network, addr: str = None) -> dict[str, str]:
     if netw.version == 4:
+        # return dict for IPv4 prefixes
         if netw.prefixlen == 31 or netw.prefixlen == 32:
             host_min = netw.network_address
             host_max = netw.broadcast_address
@@ -85,6 +86,7 @@ def _get_net_info(netw: IPv4Network, addr: str = None):
             'class': _fill_v4_class(netw.network_address.packed),
         }
     else:
+        # return dict for IPv6 prefixes
         if netw.prefixlen == 127 or netw.prefixlen == 128:
             host_min = str(netw.network_address.exploded)
             host_max = str(netw.broadcast_address.exploded)
@@ -99,7 +101,7 @@ def _get_net_info(netw: IPv4Network, addr: str = None):
             'address_type': _fill_network_type(IPv6Address(addr)) if addr else "",
             'netmask_hex': netw.netmask.exploded.__str__(),
             'preflen': netw.prefixlen,
-            'wildcard_hex': netw.netmask.exploded.__str__(),
+            'wildcard_hex': netw.hostmask.exploded.__str__(),
             'network_hex': netw.exploded.__str__(),
             'broadcast_hex': netw.broadcast_address.exploded.__str__(),
             'hostmin_hex': host_min,
@@ -111,22 +113,23 @@ def _get_net_info(netw: IPv4Network, addr: str = None):
 
 def _find_subnets(netw: IPv4Network, sub_pfx: int | str) -> dict[str, [str, list]]:
     if sub_pfx - netw.prefixlen > 12:
-        return {"subnet_error": "Sorry, too many subnets, prefix difference cannot be more than 12."}
+        return {"sub_error": "Sorry, too many subnets, prefix difference cannot be more than 12"}
     else:
         return {"subnets": [_get_net_info(sub) for sub in netw.subnets(new_prefix=sub_pfx)]}
 
 
-def calc_dispatcher(user_string: str):
+def calc_dispatcher(user_string: str) -> dict[str, str]:
     try:
-        parsed_user_string = _parse_input(user_string)
-        addr = parsed_user_string[0]
-        mask = parsed_user_string[1]
+        parsed_args = _parse_input(user_string)
+        parsed_args_len = len(parsed_args)
+        addr = parsed_args[0]
+        mask = parsed_args[1] if parsed_args_len > 1 else "32"
         network = ip_network(f"{addr}/{mask}", strict=False)
         net_info = _get_net_info(network, addr)
         sub_info = {}
-        if len(parsed_user_string) >= 3:
+        if parsed_args_len >= 3:
             try:
-                sub_pfx = _normalise_subnet_prefix(parsed_user_string[2])
+                sub_pfx = _normalise_subnet_prefix(parsed_args[2])
                 sub_info = _find_subnets(network, sub_pfx)
             except (ValueError, TypeError) as error:
                 sub_info = {"sub_error": str(error)}
