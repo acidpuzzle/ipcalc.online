@@ -1,14 +1,11 @@
 import re
-import logging
 from ipaddress import *
-
-logger = logging.getLogger(__name__)
 
 regex = re.compile(r"[\s\/%\\]+")
 
 
-def _normalise_input(user_input: str) -> tuple:
-    return tuple(regex.split(user_input))
+def _parse_input(user_string: str) -> tuple:
+    return tuple(regex.split(user_string))
 
 
 def _normalise_subnet_prefix(prefix: str) -> int:
@@ -17,7 +14,6 @@ def _normalise_subnet_prefix(prefix: str) -> int:
 
 def _get_doted_binary(address: bytes) -> str:
     return '{:08b}.{:08b}.{:08b}.{:08b}'.format(*list(address))
-    # return [f'{val:08b}' for val in address]
 
 
 def _fill_network_type(target_address) -> str:
@@ -56,137 +52,84 @@ def _fill_v4_class(packed_address: bytes):
         return "Class E"
 
 
-def _fill_v4net_info(src_addr: str, src_net: IPv4Network) -> dict:
-    try:
-        if src_net.prefixlen == 31 or src_net.prefixlen == 32:
-            host_min = src_net.network_address
-            host_max = src_net.broadcast_address
+def _get_net_info(netw: IPv4Network, addr: str = None):
+    if netw.version == 4:
+        if netw.prefixlen == 31 or netw.prefixlen == 32:
+            host_min = netw.network_address
+            host_max = netw.broadcast_address
             hosts = 0
         else:
-            host_min = src_net.network_address + 1
-            host_max = src_net.broadcast_address - 1
-            hosts = src_net.num_addresses - 2
+            host_min = netw.network_address + 1
+            host_max = netw.broadcast_address - 1
+            hosts = netw.num_addresses - 2
         return {
-            'version': f"IPv{src_net.version}",
-            'address_dd': src_addr,
-            'address_db': _get_doted_binary(IPv4Address(src_addr).packed),
-            'address_type': _fill_network_type(IPv4Address(src_addr)),
-            'network_dd': src_net.__str__(),
-            'network_db': _get_doted_binary(src_net.network_address.packed),
-            'preflen': src_net.prefixlen,
-            'netmask_dd': src_net.netmask.__str__(),
-            'netmask_db': _get_doted_binary(src_net.netmask.packed),
-            'wildcard_dd': src_net.hostmask.__str__(),
-            'wildcard_db': _get_doted_binary(src_net.hostmask.packed),
+            'version': f"IPv{netw.version}",
+            'address_dd': addr if addr else "",
+            'address_db': _get_doted_binary(IPv4Address(addr).packed) if addr else "",
+            'address_type': _fill_network_type(IPv4Address(addr)) if addr else "",
+            'network_dd': netw.__str__(),
+            'network_db': _get_doted_binary(netw.network_address.packed),
+            'preflen': netw.prefixlen,
+            'netmask_dd': netw.netmask.__str__(),
+            'netmask_db': _get_doted_binary(netw.netmask.packed),
+            'wildcard_dd': netw.hostmask.__str__(),
+            'wildcard_db': _get_doted_binary(netw.hostmask.packed),
             'hostmin_dd': host_min.__str__(),
             'hostmin_db': _get_doted_binary(host_min.packed),
             'hostmax_dd': host_max.__str__(),
             'hostmax_db': _get_doted_binary(host_max.packed),
-            'broadcast_dd': src_net.broadcast_address.__str__(),
-            'broadcast_db': _get_doted_binary(src_net.broadcast_address.packed),
+            'broadcast_dd': netw.broadcast_address.__str__(),
+            'broadcast_db': _get_doted_binary(netw.broadcast_address.packed),
             'hosts': hosts,
-            'type': _fill_network_type(src_net),
-            'class': _fill_v4_class(src_net.network_address.packed),
+            'type': _fill_network_type(netw),
+            'class': _fill_v4_class(netw.network_address.packed),
         }
-    except ValueError as error:
-        return {'Error': error}
-
-
-def _fill_v6net_info(src_addr: str, src_net: IPv6Network) -> dict[str]:
-    try:
-        if src_net.prefixlen == 127 or src_net.prefixlen == 128:
-            host_min = str(src_net.network_address.exploded)
-            host_max = str(src_net.broadcast_address.exploded)
+    else:
+        if netw.prefixlen == 127 or netw.prefixlen == 128:
+            host_min = str(netw.network_address.exploded)
+            host_max = str(netw.broadcast_address.exploded)
             hosts = 0
         else:
-            host_min = str((src_net.network_address + 1).exploded)
-            host_max = str((src_net.broadcast_address - 1).exploded)
-            hosts = src_net.num_addresses - 2
+            host_min = str((netw.network_address + 1).exploded)
+            host_max = str((netw.broadcast_address - 1).exploded)
+            hosts = netw.num_addresses - 2
         return {
-            'version': f"IPv{src_net.version}",
-            'address_hex': IPv6Address(src_addr).exploded.__str__(),
-            'address_type': _fill_network_type(IPv6Address(src_addr)),
-            'netmask_hex': src_net.netmask.exploded.__str__(),
-            'preflen': src_net.prefixlen,
-            'wildcard_hex': src_net.netmask.exploded.__str__(),
-            'network_hex': src_net.exploded.__str__(),
-            'broadcast_hex': src_net.broadcast_address.exploded.__str__(),
+            'version': f"IPv{netw.version}",
+            'address_hex': IPv6Address(addr).exploded.__str__() if addr else "",
+            'address_type': _fill_network_type(IPv6Address(addr)) if addr else "",
+            'netmask_hex': netw.netmask.exploded.__str__(),
+            'preflen': netw.prefixlen,
+            'wildcard_hex': netw.netmask.exploded.__str__(),
+            'network_hex': netw.exploded.__str__(),
+            'broadcast_hex': netw.broadcast_address.exploded.__str__(),
             'hostmin_hex': host_min,
             'hostmax_hex': host_max,
             'hosts': hosts,
-            'type': _fill_network_type(src_net),
+            'type': _fill_network_type(netw),
         }
-    except ValueError as error:
-        return {'Error': error}
 
 
-def _fill_subnet_info(src_net: IPv4Network | IPv6Network, prfx: str):
+def _find_subnets(netw: IPv4Network, sub_pfx: int | str) -> dict[str, [str, list]]:
+    if sub_pfx - netw.prefixlen > 12:
+        return {"subnet_error": "Sorry, too many subnets, prefix difference cannot be more than 12."}
+    else:
+        return {"subnets": [_get_net_info(sub) for sub in netw.subnets(new_prefix=sub_pfx)]}
+
+
+def calc_dispatcher(user_string: str):
     try:
-        prfx = _normalise_subnet_prefix(prfx)
-        if prfx - src_net.prefixlen > 12:
-            return {'subnet_error': "Sorry, too many subnets, prefix difference cannot be more than 12."}
-        if src_net.version == 4:
+        parsed_user_string = _parse_input(user_string)
+        addr = parsed_user_string[0]
+        mask = parsed_user_string[1]
+        network = ip_network(f"{addr}/{mask}", strict=False)
+        net_info = _get_net_info(network, addr)
+        sub_info = {}
+        if len(parsed_user_string) >= 3:
             try:
-                logger.debug(f"{src_net}")
-                subnet_list = (
-                    _fill_v4net_info(str(subnet.network_address), subnet)
-                    for subnet in src_net.subnets(new_prefix=int(prfx))
-                )
-                return {'subnet_list': subnet_list}
-            except ValueError as error:
-                return {'subnet_error': error}
-        else:
-            try:
-                subnet_list = (
-                    _fill_v6net_info(str(subnet.network_address), subnet)
-                    for subnet in src_net.subnets(new_prefix=int(prfx))
-                )
-                return {'subnet_list': subnet_list}
-            except ValueError as error:
-                return {'subnet_error': error}
-    except ValueError as error:
-        logging.error(error)
-        return {'subnet_error': error}
-
-
-def calc_dispatcher(raw_request_string: str) -> dict[str]:
-    try:
-        network_string = ''
-        subnets_mask = ''
-        subnet_list = ''
-        logger.debug(f"raw_request_string={raw_request_string}")
-        network_list = _normalise_input(raw_request_string)
-        logger.debug(f"network_list={network_list}")
-
-        if len(network_list) == 1:
-            network_string = f"{network_list[0]}/32"
-
-        elif len(network_list) == 2:
-            network_string = f"{network_list[0]}/{network_list[1]}"
-
-        elif len(network_list) == 3:
-            # if int(network_list[1]) >= int(network_list[2]):
-            #     return {'calc_error': 'new prefix must be longer'}
-            network_string = f"{network_list[0]}/{network_list[1]}"
-            subnets_mask = network_list[2]
-
-        elif len(network_list) > 3:
-            return {'calc_error': 'more than 3 args'}
-
-        ip_network_obj = ip_network(network_string, strict=False)
-        if ip_network_obj.version == 4:
-            network_info = _fill_v4net_info(network_list[0], ip_network_obj)
-            if subnets_mask:
-                subnet_list = _fill_subnet_info(ip_network_obj, subnets_mask)
-                network_info = network_info | subnet_list
-            return {**network_info}
-        else:
-            network_info = _fill_v6net_info(network_list[0], ip_network_obj)
-            if subnets_mask:
-                subnet_list = _fill_subnet_info(ip_network_obj, subnets_mask)
-                network_info = network_info | subnet_list
-            return {**network_info}
-    except ValueError as err:
-        logger.info(err)
-        return {'calc_error': err}
-
+                sub_pfx = _normalise_subnet_prefix(parsed_user_string[2])
+                sub_info = _find_subnets(network, sub_pfx)
+            except (ValueError, TypeError) as error:
+                sub_info = {"sub_error": str(error)}
+        return {**net_info, **sub_info}
+    except (ValueError, TypeError) as error:
+        return {"net_error": str(error)}
