@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
+    IP calculator
+  </title>
+  <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
+</head>
+<body class="mw-100">
+<!-- BEGIN HEADER -->
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <header class="justify-content-center py-3">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+          <li class="nav-item"><a href="{{ url_for('ipcalc') }}" class="nav-link px-2 text-muted">IP Calculator</a></li>
+          <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Password generator</a></li>
+          <li class="nav-item"><a href="{{ url_for('faq') }}" class="nav-link px-2 text-muted">FAQ</a></li>
+          <li class="nav-item"><a href="{{ url_for('about') }}" class="nav-link px-2 text-muted">About</a></li>
+        </ul>
+      </header>
+    </div>
+  </div>
+</div>
+<!-- END HEADER -->
+<div class="container text-center">
+  <div class="row">
+    <div class="col bg-success">
+      Address
+    </div>
+    <div class="col bg-danger">
+      255.255.255.255
+    </div>
+    <div class="col bg-success">
+      11111111.11111111.11111111.11111111
+    </div>
+  </div>
+</div>
+{%- block content %}
+{% endblock -%}
+<!-- BEGIN FOOTER -->
+
+<div class="container">
+  <footer class="footer" id="footer">
+      <div class="row">
+        <div class="col-12">
+          <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+            <li class="nav-item"><a href="{{ url_for('ipcalc') }}" class="nav-link px-2 text-muted">IP Calculator</a>
+            </li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Password generator</a></li>
+            <li class="nav-item"><a href="{{ url_for('faq') }}" class="nav-link px-2 text-muted">FAQ</a></li>
+            <li class="nav-item"><a href="{{ url_for('about') }}" class="nav-link px-2 text-muted">About</a></li>
+          </ul>
+          <p class="text-center text-muted">&copy; 2022 Company, Inc</p>
+        </div>
+      </div>
+
+  </footer>
+</div>
+<!-- END FOOTER -->
+</body>
+</html>

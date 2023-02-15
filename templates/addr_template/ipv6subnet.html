@@ -1,27 +1,27 @@
-<!--  -->
-<div class="container mt-2">
-  <div class="row">
-    <div class="col-12">
-      <table class="table table-sm">
-        <tr>
-          <th scope="row">Network</th>
-          <td>{{ subnet.Network_hex }}</td>
-        </tr>
-        <tr>
-          <th scope="row">HostMin</th>
-          <td>{{ subnet.HostMin_hex }}</td>
-        </tr>
-        <tr>
-          <th scope="row">HostMax</th>
-          <td>{{ subnet.HostMax_hex }}</td>
-        </tr>
-        <tr>
-          <th scope="row">Broadcast</th>
-          <td>{{ subnet.Broadcast_hex }}</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-<!-- -->
+<table class="table">
+    <tr>
+        <td class="col1">Network:</td>
+        <td class="col2">{{ subnet.network_dd }}</td>
+        <td class="col3">{{ subnet.network_db }}</td>
+    </tr>
+    <tr>
+        <td class="col1">HostMin:</td>
+        <td class="col2">{{ subnet.hostmin_dd }}</td>
+        <td class="col3">{{ subnet.hostmin_db }}</td>
+    </tr>
+    <tr>
+        <td class="col1">HostMax:</td>
+        <td class="col2">{{ subnet.hostmax_dd }}</td>
+        <td class="col3">{{ subnet.hostmax_db }}</td>
+    </tr>
+    <tr>
+        <td class="col1">Broadcast:</td>
+        <td class="col2">{{ subnet.broadcast_dd }}</td>
+        <td class="col3">{{ subnet.broadcast_db }}</td>
+    </tr>
+    <tr>
+        <td class="col1">Hosts:</td>
+        <td class="col2">{{ subnet.hosts }}</td>
+        <td class="col3"></td>
+    </tr>
+</table>

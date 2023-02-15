@@ -10,6 +10,19 @@ from ipcalc import calc_dispatcher
 #     return render_template("index.html.del")
 
 
+class Paginator:
+    def __init__(self, obj_gen: iter, on_each_side: int = 16):
+        self.on_each_side = on_each_side
+        self.obj_box = obj_gen
+        self.page_num = 1
+        self.full_list = []
+
+    # def gen_page(self):
+    #     for i <= on_each_side:
+    #     return [obj for obj in self.obj_box if]
+    #
+
+
 class IPCalc(View):
     init_every_request = False
 
@@ -21,6 +34,7 @@ class IPCalc(View):
         if raw_request_string:
             app.logger.info(f"{raw_request_string=}")
             context = calc_dispatcher(raw_request_string)
+            print(context)
         else:
             context = {}
 
