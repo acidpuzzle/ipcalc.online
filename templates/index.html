@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{%- block title %}
+{{ address }} {{ super() }}
+{% endblock -%}
 {%- block content %}
 <form method="get">
     <label for="network">Сopy and paste from your network device config:</label>
@@ -7,6 +10,9 @@
 </form>
 
 {%- if version == 'IPv4' %}
+{%- if subnets or sub_error %}
+<p>Supernet:</p>
+{% endif -%}
 {% include 'addr_template/ipv4.html' %}
 {%- if sub_error %}
 <p>Subnets:</p>
@@ -20,6 +26,9 @@
 {% endif -%}
 {% endif -%}
 {%- if version == 'IPv6' %}
+{%- if subnets or sub_error %}
+<p>Supernet:</p>
+{% endif -%}
 {% include 'addr_template/ipv6.html' %}
 {%- if sub_error %}
 <p>Subnets:</p>

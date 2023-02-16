@@ -64,7 +64,7 @@ def _get_net_info(netw: IPv4Network | IPv6Network, addr: str = None) -> dict[str
             hosts = netw.num_addresses - 2
         return {
             'version': f"IPv{netw.version}",
-            'address_dd': addr if addr else "",
+            'address': addr if addr else "",
             'address_db': _get_doted_binary(IPv4Address(addr).packed) if addr else "",
             'address_type': _fill_network_type(IPv4Address(addr)) if addr else "",
             'network_dd': netw.__str__(),
@@ -96,7 +96,7 @@ def _get_net_info(netw: IPv4Network | IPv6Network, addr: str = None) -> dict[str
             hosts = netw.num_addresses - 2
         return {
             'version': f"IPv{netw.version}",
-            'address_hex': IPv6Address(addr).exploded.__str__() if addr else "",
+            'address': IPv6Address(addr).exploded.__str__() if addr else "",
             'address_type': _fill_network_type(IPv6Address(addr)) if addr else "",
             'netmask_hex': netw.netmask.exploded.__str__(),
             'preflen': netw.prefixlen,

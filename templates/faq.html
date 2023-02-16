@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{%- block title %}
+FAQ {{ super() }}
+{% endblock -%}
 {% block content %}
 <p>IP Calculator supports IPv4 and IPv6.
 Just copy the string with the address and mask from the network device and paste it into the field.</p>

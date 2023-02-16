@@ -3,7 +3,7 @@ html, body, input {
   height:100%;
   margin-left: auto;
   margin-right: auto;
-  font: 1em / 1.5 Consolas, Helvetica Neue, Helvetica, Arial, sans-serif;
+  font: 1em Consolas, Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
 html {
@@ -19,11 +19,15 @@ body {
 
 header {
   color: #606060;
-  font: 1.2em / 1.5 Consolas, Helvetica Neue, Helvetica, Arial, sans-serif;
+  font: 1.2em Consolas, Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 footer {
   color: #606060;
-  font: 0.9em / 1.5 Consolas, Helvetica Neue, Helvetica, Arial, sans-serif;
+  font: 0.9em Consolas, Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
+form {
+  padding-bottom: 30px;
 }
 
 * {
@@ -39,11 +43,13 @@ a:link, a:visited, a:hover, a:active  {
   color: #606060;
 }
 
+/*
 tbody {
   width: 100%;
   height: 100%;
   padding: 0 0 0 0;
 }
+*/
 
 input[type=text],
 input[type=submit] {
@@ -61,7 +67,7 @@ input[type=text] {
 
 input[type=submit] {
   cursor: pointer;
-  width: 16%;
+  width: 18%;
 }
 
 section {
@@ -82,10 +88,10 @@ section {
 }
 
 td.col1 {
-  width: 25%;
+  width: 21%;
 }
 td.col2 {
-  width: 25%;
+  width: 29%;
 }
 td.col3 {
   width: 50%;
@@ -108,7 +114,7 @@ li.inline {
 }
 
 .table {
-  margin: 40px 0 10px;
+  margin: 15px 15px 15px 15px;
   padding-left: 0;
   padding-right: 0;
 }
