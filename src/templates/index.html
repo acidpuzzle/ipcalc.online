@@ -3,12 +3,12 @@
 {{ address }} {{ super() }}
 {% endblock -%}
 {%- block content %}
+<h1>IP calculator</h1>
 <form method="get">
     <label for="network">Сopy and paste from your network device config:</label>
     <input id="network" type="text" autofocus="autofocus" name="network" value="{{ request.args.get('network', '') }}">
     <input type="submit" value="do it">
 </form>
-
 {%- if version == 'IPv4' %}
 {%- if subnets or sub_error %}
 <p>Supernet:</p>
