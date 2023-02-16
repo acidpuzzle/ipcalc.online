@@ -185,3 +185,9 @@ fabric.properties
 # .idea
 
 .idea
+
+# upload archive:
+*.zip
+*.rar
+*.tar
+*.gz

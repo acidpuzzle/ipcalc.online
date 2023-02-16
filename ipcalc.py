@@ -1,7 +1,7 @@
 import re
 from ipaddress import *
 
-regex = re.compile(r"[\s\/%\\]+")
+regex = re.compile(r"[\s\/%\\_]+")
 
 
 def _parse_input(user_string: str) -> tuple:
@@ -25,9 +25,8 @@ def _fill_network_type(target_address: IPv4Network | IPv6Network) -> str:
         return "Reserved"
     elif target_address.is_multicast:
         return "Multicast"
-    elif target_address.version == 6:
-        if target_address.is_site_local:
-            return "Site local"
+    elif target_address.version == 6 and target_address.is_site_local:
+        return "Site local"
     elif target_address.is_link_local:
         return "Link local"
     elif target_address.is_private:
@@ -113,7 +112,7 @@ def _get_net_info(netw: IPv4Network | IPv6Network, addr: str = None) -> dict[str
 
 def _find_subnets(netw: IPv4Network, sub_pfx: int | str) -> dict[str, [str, list]]:
     if sub_pfx - netw.prefixlen > 12:
-        return {"sub_error": "Sorry, too many subnets, prefix difference cannot be more than 12"}
+        return {"sub_error": "Sorry, too many subnets, prefix difference cannot be more than 12 bit"}
     else:
         return {"subnets": [_get_net_info(sub) for sub in netw.subnets(new_prefix=sub_pfx)]}
 
@@ -123,8 +122,7 @@ def calc_dispatcher(user_string: str) -> dict[str, str]:
         parsed_args = _parse_input(user_string)
         parsed_args_len = len(parsed_args)
         addr = parsed_args[0]
-        mask = parsed_args[1] if parsed_args_len > 1 else "32"
-        network = ip_network(f"{addr}/{mask}", strict=False)
+        network = ip_network(f"{addr}/{parsed_args[1]}", strict=False) if parsed_args_len > 1 else ip_network(f"{addr}")
         net_info = _get_net_info(network, addr)
         sub_info = {}
         if parsed_args_len >= 3:
