@@ -1,22 +1,57 @@
 import re
 from ipaddress import *
 
+# regex to split arguments
 regex = re.compile(r"[\s\/%\\_]+")
 
 
 def _parse_input(user_string: str) -> tuple:
+    """
+    Splits a string using a regular expression and returns a tuple with arguments
+    :param user_string: user request
+    :return: tuple with arguments
+    """
     return tuple(regex.split(user_string.strip()))
 
 
 def _normalise_subnet_prefix(prefix: str) -> int:
+    """
+    string with mask or prefix length
+    :param prefix:
+    :return: integer prefix length
+    """
     return int(prefix) if prefix.isdigit() else ip_network(f"0.0.0.0/{prefix}").prefixlen
 
 
-def _get_doted_binary(address: bytes) -> str:
-    return '{:08b}.{:08b}.{:08b}.{:08b}'.format(*list(address))
+def _get_doted_binary(packed_address: bytes) -> str:
+    """
+    Converts the 4bit string of an ip address to a string with a binary representation of the address
+    :param packed_address: bytes
+    :return: str, example "10101100.00010000.00101100.00000001"
+    """
+    return '{:08b}.{:08b}.{:08b}.{:08b}'.format(*list(packed_address))
 
 
-def _fill_network_type(target_address: IPv4Network | IPv6Network) -> str:
+def _find_subnets(netw: IPv4Network, sub_pfx: int | str) -> dict[str, [str, list]]:
+    """
+    Creates a list with subnets and returns a dictionary
+    :param netw: Supernet
+    :param sub_pfx: prefix of subnets
+    :return: dictionary with subnets
+    """
+    if sub_pfx - netw.prefixlen > 12:
+        return {"sub_error": "Sorry, too many subnets, prefix difference cannot be more than 12 bit"}
+    else:
+        subnets = [_get_net_info(sub) for sub in netw.subnets(new_prefix=sub_pfx)]
+        return {"num_subnets": len(subnets), "subnets": subnets}
+
+
+def _fill_network_type(target_address: IPv4Network | IPv6Network | IPv4Address | IPv6Address) -> str:
+    """
+    Specifies the type of the passed address
+    :param target_address: IPv4Network, IPv6Network, IPv4Address, IPv6Address object
+    :return: Type of address
+    """
     if target_address.is_loopback:
         return "Loopback"
     elif target_address.is_unspecified:
@@ -38,6 +73,11 @@ def _fill_network_type(target_address: IPv4Network | IPv6Network) -> str:
 
 
 def _fill_v4_class(packed_address: bytes) -> str:
+    """
+    Specifies the class of the passed address
+    :param packed_address: bytes
+    :return: Class of address
+    """
     bin_addr = _get_doted_binary(packed_address)
     if bin_addr.startswith('0'):
         return "Class A"
@@ -52,6 +92,12 @@ def _fill_v4_class(packed_address: bytes) -> str:
 
 
 def _get_net_info(netw: IPv4Network | IPv6Network, addr: str = None) -> dict[str, str]:
+    """
+    Create dictionary with address parameters to pass to the template
+    :param netw: IPv4Network or IPv6Network object
+    :param addr: string address
+    :return: dictionary with address parameters
+    """
     if netw.version == 4:
         # return dict for IPv4 prefixes
         if netw.prefixlen == 31 or netw.prefixlen == 32:
@@ -110,14 +156,12 @@ def _get_net_info(netw: IPv4Network | IPv6Network, addr: str = None) -> dict[str
         }
 
 
-def _find_subnets(netw: IPv4Network, sub_pfx: int | str) -> dict[str, [str, list]]:
-    if sub_pfx - netw.prefixlen > 12:
-        return {"sub_error": "Sorry, too many subnets, prefix difference cannot be more than 12 bit"}
-    else:
-        return {"subnets": [_get_net_info(sub) for sub in netw.subnets(new_prefix=sub_pfx)]}
-
-
 def calc_dispatcher(user_string: str) -> dict[str, str]:
+    """
+    Main function dispatcher, processes arguments and returns dictionaries
+    :param user_string: raw string from user request
+    :return: Ready-made dictionary for substitution into a template
+    """
     try:
         parsed_args = _parse_input(user_string)
         parsed_args_len = len(parsed_args)

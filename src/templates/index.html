@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
-{%- block title %}
-{{ address }} {{ super() }}
-{% endblock -%}
+{%- block title %}{{ address }} {{ super() }}{% endblock -%}
 {%- block content %}
 <h1>IP calculator</h1>
 <form method="get">
@@ -10,38 +8,32 @@
     <input type="submit" value="do it">
 </form>
 {%- if version == 'IPv4' %}
-{%- if subnets or sub_error %}
-<p>Supernet:</p>
-{% endif -%}
+{%- if subnets or sub_error %}<p>Supernet:</p>{% endif -%}
 {% include 'addr_template/ipv4.html' %}
 {%- if sub_error %}
 <p>Subnets:</p>
 <p>Error: {{ sub_error }}</p>
 {% endif -%}
 {%- if subnets %}
-<p>Subnets:</p>
+<p>Subnets: {{ num_subnets }}</p>
 {%- for subnet in subnets %}
 {% include 'addr_template/ipv4subnet.html' -%}
 {% endfor -%}
 {% endif -%}
 {% endif -%}
 {%- if version == 'IPv6' %}
-{%- if subnets or sub_error %}
-<p>Supernet:</p>
-{% endif -%}
+{%- if subnets or sub_error %}<p>Supernet:</p>{% endif -%}
 {% include 'addr_template/ipv6.html' %}
 {%- if sub_error %}
 <p>Subnets:</p>
 <p>Error: {{ sub_error }}</p>
 {% endif -%}
 {%- if subnets %}
-<p>Subnets:</p>
+<p>Subnets: {{ num_subnets }}</p>
 {%- for subnet in subnets %}
 {% include 'addr_template/ipv6subnet.html' %}
 {% endfor -%}
 {% endif -%}
 {% endif -%}
-{%- if net_error %}
-<p>Error: {{ net_error }}</p>
-{% endif -%}
+{%- if net_error %}<p>Error: {{ net_error }}</p>{% endif -%}
 {% endblock -%}
