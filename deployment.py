@@ -4,7 +4,7 @@ import os
 
 
 ROOT_DIR = Path(__file__).resolve().parent
-SRC_DIR = ROOT_DIR / "src"
+SRC_DIR = ROOT_DIR / "ipcalc"
 
 
 def archive(drc_dir: Path) -> None:

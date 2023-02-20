@@ -1,9 +1,8 @@
-from app import application
 from flask.views import View
 from flask import request, render_template, jsonify
 
-
-from ipcalc import calc_dispatcher
+from .app import application
+from .calculator import calc_dispatcher
 
 
 class IPCalc(View):
