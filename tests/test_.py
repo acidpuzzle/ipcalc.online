@@ -151,6 +151,21 @@ def test_about(client):
            ) in rv.data
 
 
+def test_api(client):
+    rv = client.get('/api/192.168.0.0_24')
+    assert (
+               b'{"version":"IPv4","address":"192.168.0.0","address_db":"11000000.10101000.00'
+               b'000000.00000000","address_type":"Private","network_dd":"192.168.0.0/24","net'
+               b'work_db":"11000000.10101000.00000000.00000000","preflen":24,"netmask_dd":"25'
+               b'5.255.255.0","netmask_db":"11111111.11111111.11111111.00000000","wildcard_dd'
+               b'":"0.0.0.255","wildcard_db":"00000000.00000000.00000000.11111111","hostmin_d'
+               b'd":"192.168.0.1","hostmin_db":"11000000.10101000.00000000.00000001","hostmax'
+               b'_dd":"192.168.0.254","hostmax_db":"11000000.10101000.00000000.11111110","bro'
+               b'adcast_dd":"192.168.0.255","broadcast_db":"11000000.10101000.00000000.111111'
+               b'11","hosts":254,"type":"Private","class":"Class C"}\n'
+           ) in rv.data
+
+
 if __name__ == "__main__":
     pass
 
