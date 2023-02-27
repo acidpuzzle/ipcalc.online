@@ -1,5 +1,5 @@
 from flask import Flask
-from ipcalc.config import Configuration
+from .config import Configuration
 
 
 application = Flask(__name__)
