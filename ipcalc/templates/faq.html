@@ -1,17 +1,18 @@
 {% extends 'base.html' %}
 {%- block title %}{{ super() }} FAQ{% endblock -%}
 {% block content %}
-<h1>FAQ</h1>
+<h2>FAQ</h2>
 <p>IP Calculator supports IPv4 and IPv6.
 Just copy the string with the address and mask from the network device config and paste it into the field.</p>
-<h2>Supported formats:</h2>
+<h3>Supported formats:</h3>
 <ul class="example">
     <li><a href="{{ url_for('ipcalc', network='127.0.0.1') }}">127.0.0.1</a></li>
     <li><a href="{{ url_for('ipcalc', network='192.168.0.1/24') }}">192.168.0.1/24</a></li>
     <li><a href="{{ url_for('ipcalc', network='172.16.44.1 21') }}">172.16.44.1 21</a></li>
     <li><a href="{{ url_for('ipcalc', network='192.168.0.1/255.255.255.252') }}">192.168.0.1/255.255.255.252</a>
     </li>
-    <li><a href="{{ url_for('ipcalc', network='10.0.0.0 / 12') }}">10.0.0.0 / 12 </a></li>
+    <li><a href="{{ url_for('ipcalc', network='10.0.0.0 / 12') }}">10.0.0.0 / 12</a></li>
+    <li><a href="{{ url_for('ipcalc', network='10.0.0.0 mask 255.0.0.0') }}">10.0.0.0 mask 255.0.0.0</a></li>
     <li><a href="{{ url_for('ipcalc', network='169.254.0.2 16') }}">169.254.0.2 16</a></li>
     <li><a href="{{ url_for('ipcalc', network='192.168.24.0 0.0.1.255') }}">192.168.24.0 0.0.1.255</a></li>
     <li><a href="{{ url_for('ipcalc', network='192.168.255.1/24 /25') }}">192.168.255.1/24 /25</a></li>
@@ -20,7 +21,7 @@ Just copy the string with the address and mask from the network device config an
     <li><a href="{{ url_for('ipcalc', network='fe80::e1b:4dc8:c839:a10/64 /66') }}">fe80::e1b:4dc8:c839:a10/64 /66</a></li>
     <li><a href="{{ url_for('ipcalc', network='fffe::e1b:4dc8:c839:a10') }}">fffe::e1b:4dc8:c839:a10</a></li>
 </ul>
-<h2>API:</h2>
+<h3>API:</h3>
 <ul class="example">
     <li><a href="{{ url_for('api', network='192.168.0.1_24') }}">https://ipcalc.online/api/192.168.0.1_24</a></li>
     <li><a href="{{ url_for('api', network='192.168.0.1_24_25') }}">https://ipcalc.online/api/192.168.0.1_24_25</a></li></ul>

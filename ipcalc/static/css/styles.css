@@ -99,6 +99,10 @@ td.v6_col2 {
   padding: 20px;
 }
 
+p.indent {
+  text-indent: 1em;
+}
+
 li.inline {
   list-style: none;
   display: inline;

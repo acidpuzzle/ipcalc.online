@@ -2,7 +2,7 @@ import re
 from ipaddress import *
 
 # regex to split arguments
-regex = re.compile(r"[\s\/%\\_]+")
+regex = re.compile(r"[^\d.]+")
 
 
 def _parse_input(user_string: str) -> tuple:
