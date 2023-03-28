@@ -1,4 +1,4 @@
-html, body, input, label {
+html, body, label {
   width: 700px;
   height:100%;
   margin-left: auto;
@@ -43,6 +43,15 @@ a:link, a:visited, a:hover, a:active  {
   color: #606060;
 }
 
+/*
+input {
+  width: 700px;
+  height:100%;
+  margin-left: auto;
+  margin-right: auto;
+  font: 1em Consolas, Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
 input[type=text],
 input[type=submit] {
   outline: #606060;
@@ -58,6 +67,26 @@ input[type=text] {
 }
 
 input[type=submit] {
+  cursor: pointer;
+  width: 18%;
+}
+*/
+
+.input_form {
+  outline: #606060;
+  border: 2px solid #606060;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border-radius: 10px;
+  font: 1em Consolas, Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
+.field {
+  width: 80%;
+}
+
+.button {
   cursor: pointer;
   width: 18%;
 }
@@ -123,4 +152,9 @@ li.inline {
 .example {
   list-style-type: circle;
   margin-left: 30px;
+}
+
+.pass_print {
+ width: 700px;
+ margin-right: 10px;
 }

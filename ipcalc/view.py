@@ -3,6 +3,7 @@ from flask import request, render_template, jsonify
 
 from app import application
 from calculator import calc_dispatcher
+from gen_pass import generate_passwords
 
 
 class IPCalc(View):
@@ -17,6 +18,22 @@ class IPCalc(View):
             context = calc_dispatcher(raw_request_string)
             application.logger.debug(f"{raw_request_string=}")
             application.logger.debug(f"{context=}")
+        else:
+            context = {}
+
+        return render_template(self.template, **context)
+
+
+class GenPass(View):
+    init_every_request = False
+
+    def __init__(self, template):
+        self.template = template
+
+    def dispatch_request(self):
+        print(request.args.keys())
+        if request.args:
+            context = generate_passwords(**request.args)
         else:
             context = {}
 
@@ -51,3 +68,4 @@ def page_not_found(e):
 
 
 application.add_url_rule("/", view_func=IPCalc.as_view("ipcalc", "index.html"), )
+application.add_url_rule("/gen_pass", view_func=GenPass.as_view("gen_pass", "gen_pass.html"), )

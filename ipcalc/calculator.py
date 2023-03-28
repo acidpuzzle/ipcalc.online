@@ -2,7 +2,8 @@ import re
 from ipaddress import *
 
 # regex to split arguments
-regex = re.compile(r"[^\d.]+")
+# regex = re.compile(r"[^\d.]+")
+regex = re.compile(r"[\s\/%\\_]+")
 
 
 def _parse_input(user_string: str) -> tuple:
@@ -11,7 +12,10 @@ def _parse_input(user_string: str) -> tuple:
     :param user_string: user request
     :return: tuple with arguments
     """
-    return tuple(regex.split(user_string.strip()))
+    parsed_input = regex.split(user_string.strip().lower())
+    if "mask" in parsed_input:
+        parsed_input.remove("mask")
+    return tuple(parsed_input)
 
 
 def _normalise_subnet_prefix(prefix: str) -> int:
@@ -154,6 +158,10 @@ def _get_net_info(netw: IPv4Network | IPv6Network, addr: str = None) -> dict[str
             'hosts': hosts,
             'type': _fill_network_type(netw),
         }
+
+
+def sub_orsuper():
+    pass
 
 
 def calc_dispatcher(user_string: str) -> dict[str, str]:

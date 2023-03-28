@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{%- block title %}{{ address }} {{ super() }}{% endblock -%}
+{%- block content %}
+<h1>Password generator</h1>
+<form method="get" style="display:inline!important;">
+  <input type="checkbox" id="nums" name="nums" {% if not request.args.keys() or request.args.get('nums', '') %}checked{% endif %}>
+  <label for="nums"> [0-9] numbers.</label>
+  <br>
+  <input type="checkbox" id="lchar" name="lchar" {% if not request.args.keys() or request.args.get('lchar', '') %}checked{% endif %}>
+  <label for="lchar"> [a-z] lovercase character.</label>
+  <br>
+  <input type="checkbox" id="uchar" name="uchar" {% if not request.args.keys() or request.args.get('uchar', '') %}checked{% endif %}>
+  <label for="uchar"> [A-Z] upercase character.</label>
+  <br>
+  <input type="checkbox" id="special" name="special" {% if not request.args.keys() or request.args.get('special', '') %}checked{% endif %}>
+  <label for="special"> [!-~] special characters.</label>
+  <br>
+  <input type="checkbox" id="lstart" name="lstart" {% if not request.args.keys() or request.args.get('lstart', '') %}checked{% endif %}>
+  <label for="lstart"> begin with letter.</label>
+  <br>
+  <label for="exclude">exclude: </label><br>
+  <input type="text" class="input_form" id="exclude" name="exclude" value="{{ request.args.get('exclude', 'l|IO0') }}">
+  <br>
+  <label for="length">length: </label><br>
+  <input type="number" class="input_form" id="length" name="length" value="{{ request.args.get('length', '16') }}">
+  <br>
+  <label for="quantity">quantity: </label><br>
+  <input type="number" class="input_form" id="quantity" name="quantity" value="{{ request.args.get('quantity', '8') }}">
+  <br>
+  <input type="submit" class="input_form button" value="do it">
+  <br>
+</form>
+{%- if pass_error %}
+<p>Error: {{ pass_error }}</p>
+{% endif -%}
+{%- if passwords %}
+<ul>
+{%- for pass in passwords %}
+<li class="pass_print">{{ pass }}</li>
+{% endfor -%}
+</ul>
+{% endif -%}
+{% endblock -%}
