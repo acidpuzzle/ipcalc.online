@@ -1,5 +1,9 @@
+import logging
 import string
 import secrets
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def generate_passwords(**kwargs):
@@ -10,6 +14,9 @@ def generate_passwords(**kwargs):
     """
     passwords = []
     keys = kwargs.keys()
+
+    logger.debug(f"keys = {keys}")
+
     alphabet = ''
     if 'nums' in keys:
         alphabet += string.digits

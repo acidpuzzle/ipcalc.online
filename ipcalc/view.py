@@ -31,7 +31,6 @@ class GenPass(View):
         self.template = template
 
     def dispatch_request(self):
-        print(request.args.keys())
         if request.args:
             context = generate_passwords(**request.args)
         else:

@@ -1,6 +1,8 @@
 import re
 from ipaddress import *
 
+from ipcalc.app import application
+
 # regex to split arguments
 # regex = re.compile(r"[^\d.]+")
 regex = re.compile(r"[\s\/%\\_]+")
@@ -160,7 +162,7 @@ def _get_net_info(netw: IPv4Network | IPv6Network, addr: str = None) -> dict[str
         }
 
 
-def sub_orsuper():
+def sub_or_super():
     pass
 
 
@@ -175,14 +177,15 @@ def calc_dispatcher(user_string: str) -> dict[str, str]:
         parsed_args_len = len(parsed_args)
         addr = parsed_args[0]
         network = ip_network(f"{addr}/{parsed_args[1]}", strict=False) if parsed_args_len > 1 else ip_network(f"{addr}")
-        net_info = _get_net_info(network, addr)
         sub_info = {}
         if parsed_args_len >= 3:
-            try:
+            if int(parsed_args[1]) > int(parsed_args[2]):
+                network = ip_network(f"{addr}/{parsed_args[2]}", strict=False)
+                sub_pfx = _normalise_subnet_prefix(parsed_args[1])
+            else:
                 sub_pfx = _normalise_subnet_prefix(parsed_args[2])
-                sub_info = _find_subnets(network, sub_pfx)
-            except (ValueError, TypeError) as error:
-                sub_info = {"sub_error": str(error)}
+            sub_info = _find_subnets(network, sub_pfx)
+        net_info = _get_net_info(network, addr)
         return {**net_info, **sub_info}
     except (ValueError, TypeError) as error:
         return {"net_error": str(error)}
