@@ -180,11 +180,13 @@ def calc_dispatcher(user_string: str) -> dict[str, str]:
         network = ip_network(f"{addr}/{parsed_args[1]}", strict=False) if parsed_args_len > 1 else ip_network(f"{addr}")
         sub_info = {}
         if parsed_args_len >= 3:
-            if int(parsed_args[1]) > int(parsed_args[2]):
-                network = ip_network(f"{addr}/{parsed_args[2]}", strict=False)
-                sub_pfx = _normalise_subnet_prefix(parsed_args[1])
+            first_prefix = _normalise_subnet_prefix(parsed_args[1])
+            second_prefix = _normalise_subnet_prefix(parsed_args[2])
+            if int(first_prefix) > int(second_prefix):
+                network = ip_network(f"{addr}/{second_prefix}", strict=False)
+                sub_pfx = first_prefix
             else:
-                sub_pfx = _normalise_subnet_prefix(parsed_args[2])
+                sub_pfx = second_prefix
             sub_info = _find_subnets(network, sub_pfx)
         net_info = _get_net_info(network, addr)
         return {**net_info, **sub_info}
