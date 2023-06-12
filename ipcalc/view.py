@@ -1,9 +1,15 @@
+import logging
+
 from flask.views import View
 from flask import request, render_template, jsonify
 
-from app import application
+from ip_calc_app import application
 from calculator import calc_dispatcher
 from gen_pass import generate_passwords
+
+
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
 
 
 class IPCalc(View):

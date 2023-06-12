@@ -1,9 +1,10 @@
 import logging
 import string
 import secrets
-import logging
+
 
 logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
 
 
 def generate_passwords(**kwargs):

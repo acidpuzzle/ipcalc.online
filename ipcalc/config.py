@@ -1,5 +1,5 @@
 class Configuration:
-    DEBUG = True
+    DEBUG = False
     JSON_SORT_KEYS = False
 
 

@@ -1,7 +1,12 @@
+import logging
 import re
 from ipaddress import *
 
-from ipcalc.app import application
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
+
+from ipcalc.ip_calc_app import application
+
 
 # regex to split arguments
 # regex = re.compile(r"[^\d.]+")
@@ -160,10 +165,6 @@ def _get_net_info(netw: IPv4Network | IPv6Network, addr: str = None) -> dict[str
             'hosts': hosts,
             'type': _fill_network_type(netw),
         }
-
-
-def sub_or_super():
-    pass
 
 
 def calc_dispatcher(user_string: str) -> dict[str, str]:
