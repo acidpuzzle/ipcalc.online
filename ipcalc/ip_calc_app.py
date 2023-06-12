@@ -6,6 +6,8 @@ from config import Configuration
 from logging.config import dictConfig
 
 
+version = "0.02"
+
 ROOT_DIR = Path(__file__).parent
 LOG_DIR = ROOT_DIR / "logs"
 LOG_FILE = LOG_DIR / "debug.log"
