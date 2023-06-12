@@ -5,7 +5,7 @@ from ipaddress import *
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
-from ipcalc.ip_calc_app import application
+from ip_calc_app import application
 
 
 # regex to split arguments
