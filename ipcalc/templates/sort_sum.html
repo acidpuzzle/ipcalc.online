@@ -1,10 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+{%- block title %}{{ address }} {{ super() }}{% endblock -%}
+{%- block content %}
+<h1>Sorting, summ network or address</h1>
+
+{%- if pass_error %}
+<p>Error: {{ pass_error }}</p>
+{% endif -%}
+{%- if passwords %}
+<ul>
+{%- for pass in passwords %}
+<li class="pass_print">{{ pass }}</li>
+{% endfor -%}
+</ul>
+{% endif -%}
+{% endblock -%}

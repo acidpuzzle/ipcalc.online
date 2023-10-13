@@ -45,6 +45,21 @@ class GenPass(View):
         return render_template(self.template, **context)
 
 
+class SortSum(View):
+    init_every_request = False
+
+    def __init__(self, template):
+        self.template = template
+
+    def dispatch_request(self):
+        if request.args:
+            context = generate_passwords(**request.args)
+        else:
+            context = {}
+
+        return render_template(self.template, **context)
+
+
 @application.route('/faq')
 def faq():
     return render_template("faq.html")
@@ -74,3 +89,4 @@ def page_not_found(e):
 
 application.add_url_rule("/", view_func=IPCalc.as_view("ipcalc", "index.html"), )
 application.add_url_rule("/gen_pass", view_func=GenPass.as_view("gen_pass", "gen_pass.html"), )
+application.add_url_rule("/sort_sum", view_func=SortSum.as_view("sort_sum", "sort_sum.html"), )

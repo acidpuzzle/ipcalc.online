@@ -182,7 +182,7 @@ def calc_dispatcher(user_string: str) -> dict[str, str]:
         if parsed_args_len >= 3:
             first_prefix = _normalise_subnet_prefix(parsed_args[1])
             second_prefix = _normalise_subnet_prefix(parsed_args[2])
-            if int(first_prefix) > int(second_prefix):
+            if first_prefix > second_prefix:
                 network = ip_network(f"{addr}/{second_prefix}", strict=False)
                 sub_pfx = first_prefix
             else:
