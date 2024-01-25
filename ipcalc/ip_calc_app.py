@@ -6,7 +6,7 @@ from config import Configuration
 from logging.config import dictConfig
 
 
-version = "0.02"
+version = "0.2"
 
 ROOT_DIR = Path(__file__).parent
 LOG_DIR = ROOT_DIR / "logs"
@@ -73,6 +73,7 @@ def get_app():
     dictConfig(LOG_CONFIG)
     app = Flask(__name__)
     app.config.from_object(Configuration)
+    setattr(app, "version", version)
     return app
 
 

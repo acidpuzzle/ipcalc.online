@@ -6,6 +6,16 @@ html, body, label {
   font: 1em Consolas, Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
+a:link, a:visited, a:active {
+  text-decoration: none;
+  color: #606060;
+}
+
+a:hover  {
+  text-decoration: none;
+  color: #000000;
+}
+
 html {
   box-sizing: border-box;
 }
@@ -38,10 +48,6 @@ ul {
   padding: 0;
 }
 
-a:link, a:visited, a:hover, a:active  {
-  text-decoration: none;
-  color: #606060;
-}
 
 /*
 input {
@@ -70,7 +76,12 @@ input[type=submit] {
   cursor: pointer;
   width: 18%;
 }
+
+a:hover {
+color: #000;
+}
 */
+
 
 .input_form {
   outline: #606060;
@@ -83,6 +94,7 @@ input[type=submit] {
 }
 
 .field {
+  margin: ;
   width: 80%;
 }
 
@@ -93,6 +105,10 @@ input[type=submit] {
 
 section {
   height: 100%
+}
+
+textarea {
+   resize: none;
 }
 
 .wrapper {

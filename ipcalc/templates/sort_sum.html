@@ -1,15 +1,40 @@
 {% extends 'base.html' %}
 {%- block title %}{{ address }} {{ super() }}{% endblock -%}
 {%- block content %}
-<h1>Sorting, summ network or address</h1>
-
-{%- if pass_error %}
-<p>Error: {{ pass_error }}</p>
+<h2>Sorting, summ network or address</h2>
+<form method="post" style="display:inline!important;">
+  <p><b>Format:</b><Br>
+   <input type="radio" name="output_format" value="address" {% if output_format == "address" %}checked{% endif %}> only address     192.168.0.0<Br>
+   <input type="radio" name="output_format" value="address_prefix" {% if not output_format or output_format == "address_prefix" %}checked{% endif %}> address/preflen  192.168.0.0/24<Br>
+   <input type="radio" name="output_format" value="address_mask" {% if output_format == "address_mask" %}checked{% endif %}> address mask  192.168.0.0 255.255.255.0<Br>
+   <input type="radio" name="output_format" value="address_wildcard" {% if output_format == "address_wildcard" %}checked{% endif %}> address wildcard 192.168.0.0 0.0.0.255<Br>
+  </p>
+  <p>
+    <div class="center">
+    <textarea name="user_nets" rows="30" cols="25" class="input_form" autofocus="autofocus">
+{%- if user_nets %}
+{{- user_nets }}
 {% endif -%}
-{%- if passwords %}
+    </textarea>
+
+    <textarea name="sorted_nets" rows="30" cols="25" class="input_form" readonly>
+{%- if sorted_nets %}
+{%- for net in sorted_nets %}
+{{- net }}
+{% endfor -%}
+{% endif -%}
+    </textarea>
+    </div>
+  </p>
+  <p>
+   <input type="submit" name="action" value="sort" class="input_form button">
+   <input type="submit" name="action" value="sum" class="input_form button">
+  </p>
+</form>
+{%- if errors %}
 <ul>
-{%- for pass in passwords %}
-<li class="pass_print">{{ pass }}</li>
+{%- for error in errors %}
+<li class="pass_print">{{ error }}</li>
 {% endfor -%}
 </ul>
 {% endif -%}

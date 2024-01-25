@@ -5,12 +5,17 @@ from ipaddress import *
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
-from ip_calc_app import application
 
+pref_re = re.compile(r"[\d.]+")
+split_regex = re.compile(r"[\s\/%\\_]+")
 
-# regex to split arguments
-# regex = re.compile(r"[^\d.]+")
-regex = re.compile(r"[\s\/%\\_]+")
+garbage = [
+    "mask",
+    "маска",
+    "ip",
+    "address",
+    "network",
+]
 
 
 def _parse_input(user_string: str) -> tuple:
@@ -19,9 +24,10 @@ def _parse_input(user_string: str) -> tuple:
     :param user_string: user request
     :return: tuple with arguments
     """
-    parsed_input = regex.split(user_string.strip().lower())
-    if "mask" in parsed_input:
-        parsed_input.remove("mask")
+    parsed_input = split_regex.split(user_string.strip().lower())
+    garbage_in_parsed = set(parsed_input) & set(garbage)
+    if garbage_in_parsed:
+        [parsed_input.remove(some) for some in garbage_in_parsed]
     return tuple(parsed_input)
 
 
@@ -32,6 +38,11 @@ def _normalise_subnet_prefix(prefix: str) -> int:
     :return: integer prefix length
     """
     return int(prefix) if prefix.isdigit() else ip_network(f"0.0.0.0/{prefix}").prefixlen
+
+
+def _check_second_prefix(second_prefix: str):
+    tmp = pref_re.search(second_prefix)
+    return tmp
 
 
 def _get_doted_binary(packed_address: bytes) -> str:
@@ -181,13 +192,15 @@ def calc_dispatcher(user_string: str) -> dict[str, str]:
         sub_info = {}
         if parsed_args_len >= 3:
             first_prefix = _normalise_subnet_prefix(parsed_args[1])
-            second_prefix = _normalise_subnet_prefix(parsed_args[2])
-            if first_prefix > second_prefix:
-                network = ip_network(f"{addr}/{second_prefix}", strict=False)
-                sub_pfx = first_prefix
-            else:
-                sub_pfx = second_prefix
-            sub_info = _find_subnets(network, sub_pfx)
+            second_prefix = _check_second_prefix(parsed_args[2])
+            if second_prefix:
+                second_prefix = _normalise_subnet_prefix(second_prefix.group(0))
+                if first_prefix > second_prefix:
+                    network = ip_network(f"{addr}/{second_prefix}", strict=False)
+                    sub_pfx = first_prefix
+                else:
+                    sub_pfx = second_prefix
+                sub_info = _find_subnets(network, sub_pfx)
         net_info = _get_net_info(network, addr)
         return {**net_info, **sub_info}
     except (ValueError, TypeError) as error:
